@@ -1,0 +1,23 @@
+# 本地真实业务资料一律不入库
+config.local.yaml
+*.local.yaml
+*.secret.*
+
+# 运行时状态数据（属于运营隐私，技能包只带模板）
+ledger.json
+video-episodes.json
+video-topics.md
+reports/
+douyin-login.png
+
+# 成片与中间产物
+*.mp4
+*.wav
+*.srt
+frames/
+
+# 系统/编辑器
+Thumbs.db
+.DS_Store
+.idea/
+.vscode/

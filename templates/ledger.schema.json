@@ -1,0 +1,37 @@
+{
+  "actions": [],
+  "stats": {
+    "totalTargets": 0,
+    "dmSent": 0,
+    "dmBlocked": 0,
+    "successRate": "无数据",
+    "replied": 0,
+    "activeConversations": 0,
+    "buyerReplies": 0,
+    "dmFailed": 0,
+    "handoffNeeded": []
+  },
+  "rules": {
+    "quietHours": "22:00-07:00 不执行任何轮次",
+    "dailyQuota": 20,
+    "stopThreshold": 18,
+    "maxMsgPerUser24h": 2,
+    "noSecondQuestion": true,
+    "replyClass": ["接受", "拒绝", "待观察", "需人工介入"],
+    "forbidden": ["费率数字", "到账承诺", "审批承诺", "返点", "微信号", "手机号", "网址", "最/第一/100%/保证"]
+  },
+  "segments": {
+    "C": "外卡/跨境（主攻，占 2/3）",
+    "B": "分账/多主体（次选，占 1/3）",
+    "A": "异地/远程（备用）"
+  },
+  "pausedSegments": ["建材批发", "社区团购", "涉外餐厅"],
+  "exhaustedKeywords": [],
+  "troubleshooting": {
+    "bomIssue": "ledger.json 必须用 Node 写，PowerShell Set-Content 会产生 BOM 导致 JSON.parse 失败",
+    "tabDrift": "Playwright 默认 page 会被无关 tab 顶掉报 Execution context destroyed；用 page.context().pages().find(...) + bringToFront()",
+    "chatListShort": "私信列表偶发只渲染 76 字符；reload 后等 15-30s 再读",
+    "panelNoEditor": "私信面板打不开可隔轮重试（实测有效）；未送达不得记 dm:sent",
+    "blockedNoRetry": "出现「仅和他互关」即被拦，不要重试"
+  }
+}

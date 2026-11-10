@@ -1,0 +1,10 @@
+{
+  "episodes": [],
+  "troubleshooting": {
+    "fastLangdetect": "曼波报 \"fast-langdetect: Cache directory not found\" 时：把 site-packages\\fast_langdetect\\resources\\lid.176.ftz 与 NOTICE.MD 复制到 GPT-SoVITS\\GPT_SoVITS\\pretrained_models\\fast_langdetect\\ 即可",
+    "browserTabDrift": "Playwright 页面会被意外导航到其他站点，导致 page.evaluate 报「Execution context was destroyed」。解法：用 page.context().pages() 找到目标 tab，bringToFront 后在该 page 对象上操作",
+    "renderTemplateUnusable": "render-template 锁定 1920×1080/10s 且缺中文字体，成片一律走 Playwright 逐帧方案",
+    "uploadDirLimit": "Playwright 上传只接受 profiles\\desktop\\.playwright-mcp\\ 目录内的文件，需先复制成片"
+  },
+  "pipelineNote": "HTML自包含 → Playwright 1080x1920 逐帧 __seek 截图（960帧）→ ffmpeg libx264 编码 → 曼波中文配音(GPT-SoVITS) → ffmpeg aac 混音 → creator.douyin.com 上传发布"
+}
