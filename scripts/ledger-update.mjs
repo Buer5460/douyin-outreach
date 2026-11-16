@@ -10,12 +10,12 @@
  * add 的 json-file 内容示例（临时文件）：
  * { "ts":"2026-11-10T18:00:00+08:00", "user":"某商家", "fans":"4.6 万",
  *   "sec":"MS4wLjABAAAA...", "source":"search:跨境电商?type=user",
- *   "signal":"跨境电商·外卡收单", "follow":"ok", "dm":"sent", "replied":false,
+ *   "signal":"<细分>·<主打能力>", "follow":"ok", "dm":"sent", "replied":false,
  *   "foundVia":"商家直搜", "segment":"C", "dmText":"你好，看你是做..." }
  *
  * reply 的 json-file 内容示例：
  * { "user":"某商家", "repliedAt":"2026-11-10T19:00:00+08:00",
- *   "replyContent":"多少钱", "classification":"接受", "ourFollowUp":"已回费率口径" }
+ *   "replyContent":"多少钱", "classification":"接受", "ourFollowUp":"已按 profile.compliance.quote_script 回复" }
  */
 import fs from 'node:fs';
 import path from 'node:path';

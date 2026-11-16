@@ -1,14 +1,17 @@
-// 用途：向候选商家批量发送私信（关注 → 私信 → 填写 → 回车 → 判定送达）
-// 调用方式：mcp__playwright__browser_run_code_unsafe 中执行本函数体
-// 参数说明：把 targets 数组替换为本轮选中的 2-3 个目标（含 name/sec/fans/text）
+// 用途：批量发送私信（关注 → 私信 → 填写 → 回车 → 送达判定）
+// 调用：mcp__playwright__browser_run_code_unsafe
+// targets[].text 由上层 agent 用 profile.segments[].pain / opener_questions / endorsement 组装，
+// 组装完成必须自查：≤120字、含一个明确问题、不含 profile.compliance.forbid 任一项。
 
 async (page) => {
+  // ↓↓↓ 由上层按 profile 生成后填入（2-3 条/轮）↓↓↓
   const targets = [
     {
-      name: '示例商家A',
-      sec: 'MS4wLjABAAAA...',           // 用户 sec_uid（不含 /user/ 前缀）
-      fans: '4.6 万',
-      text: '你好，看你是做跨境电商的。跨境卖家收的都是美元货款，走平台放款周期长、还可能被冻款。外卡直连是另一条路，和内卡是两套通道和资质。外卡这块我们在做，<ENDORSEMENT_SENTENCE>。想问下你现在主要做哪个站点、货款怎么结？'
+      name: "<商家昵称>",
+      sec: "<sec_uid>",
+      fans: "<粉丝数>",
+      segment: "<profile.segments[].id>",
+      text: "<按开场模板组装的 ≤120 字文案>"
     }
   ];
 
@@ -19,9 +22,8 @@ async (page) => {
   const out = [];
   for (const t of targets) {
     await w.goto('https://www.douyin.com/user/' + t.sec, { waitUntil: 'domcontentloaded', timeout: 45000 });
-    await w.waitForTimeout(4500);   // 页面 ≥4.5s
+    await w.waitForTimeout(4500);
 
-    // 关注
     await w.evaluate(() => {
       const b = Array.from(document.querySelectorAll('[data-e2e="user-info-follow-btn"]'))
         .filter(x => x.getBoundingClientRect().width > 0)[0];
@@ -29,7 +31,6 @@ async (page) => {
     });
     await w.waitForTimeout(1300);
 
-    // 点私信，最多试 2 次
     let ok = false;
     for (let a = 0; a < 2 && !ok; a++) {
       await w.evaluate(() => {
@@ -37,19 +38,18 @@ async (page) => {
           .filter(x => (x.textContent || '').trim() === '私信' && x.getBoundingClientRect().width > 0);
         if (dm.length) dm[0].click();
       });
-      await w.waitForTimeout(5500);  // 首次 5.5s / 第二次同样
+      await w.waitForTimeout(5500);
       ok = await w.evaluate(() => !!document.querySelector('.messageMsgInputcontainer [contenteditable="true"]'));
     }
-    if (!ok) { out.push({ name: t.name, dm: 'no-editor' }); continue; }  // 面板打不开 → 隔轮重试
+    // 面板打不开：记 no-editor，隔轮重试（实测有效）；不得记 dm:sent
+    if (!ok) { out.push({ name: t.name, segment: t.segment, dm: 'no-editor' }); continue; }
 
-    // 填写并发送
     await w.locator('.messageMsgInputcontainer [contenteditable="true"]').fill(t.text);
     await w.waitForTimeout(600);
     await w.keyboard.press('Enter');
     await w.waitForTimeout(2500);
 
-    // 判定：编辑框清空 + 有我方文案 + 无「仅和他互关」
-    const chk = await w.evaluate(() => {
+    const chk = await w.evaluate((mine) => {
       const ed = document.querySelector('.messageMsgInputcontainer [contenteditable="true"]');
       const left = ed ? (ed.innerText || '').replace(/\u200b/g, '').trim() : '__';
       let top = ed;
@@ -57,17 +57,15 @@ async (page) => {
       const tt = top ? top.innerText : '';
       return {
         empty: left.length === 0,
-        blocked: /仅和他互关 | 暂无法给对方发送消息/.test(tt),
-        mine: /外卡/.test(tt)
+        blocked: /仅和他互关|暂无法给对方发送消息/.test(tt),   // 被拦：永不重试
+        mine: tt.includes(mine)
       };
-    });
+    }, t.text.slice(4, 12));
 
     out.push({
-      name: t.name,
+      name: t.name, segment: t.segment,
       dm: chk.blocked ? 'blocked' : ((chk.empty && chk.mine) ? 'sent' : 'not-sent')
     });
-    // blocked → 不重试；not-sent → 可重试一次（按需）
   }
-
   return { out };
 }

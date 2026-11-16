@@ -1,12 +1,12 @@
 // 用途：把成片上传到抖音创作者中心并发布，随后回读作品列表确认
 // 调用方式：mcp__playwright__browser_run_code_unsafe 中执行本函数体
 // 前置：把 final.mp4 复制到 profiles\desktop\.playwright-mcp\（上传有目录限制）
-// 参数说明：改 FILE / TITLE / DESC
+// 参数说明：FILE / TITLE / DESC 从 profile.video 与本期内容生成（行业无关）
 
 async (page) => {
-  const FILE = '<DSH_HOME>\\profiles\\desktop\\.playwright-mcp\\epNN-final.mp4';
-  const TITLE = '支付常识 第NN期：<一句话>';
-  const DESC = '正文第一句。\n\n要点段落。\n\n私信说下你现在怎么收。\n\n#外卡 #跨境收款 #支付常识 #商户号 #跨境';
+  const FILE = "<STATE_DIR>/../profiles/desktop/.playwright-mcp/epNN-final.mp4";  // 实际用绝对路径
+  const TITLE = "<profile.video.title_prefix> 第NN期：<本期一句话>";
+  const DESC = "<正文两句（全部事实来自 profile）>\n\n<profile.video.cta 行动指令>\n\n<3-5 个话题标签>";
 
   const ctx = page.context();
   let w = ctx.pages().find(p => p.url().includes('creator.douyin.com'));

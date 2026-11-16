@@ -1,0 +1,101 @@
+# profile.yaml —— 行业获客档案（本文件是支付行业的完整示例）
+# 首次运行时 DSH 会询问你的实际情况并生成你自己的 profile.yaml；
+# 换行业 = 重写这份文件，SOP 本身不动。
+# 原则：所有数字、案例、资质必须真实可验证；不确定的字段宁可留空让话术少说。
+
+meta:
+  generated_at: "2026-11-16"
+  industry: "支付服务（第三方收单 / 跨境收款）"
+  company:
+    legal_name: "<COMPANY_LEGAL_NAME>"       # 企业信息平台可查的工商全称
+    brand_name: "<COMPANY_BRAND_NAME>"
+    founded: "2021 · 成都"
+    website: "<YOUR_WEBSITE_DOMAIN>"         # 仅在对方主动问联系方式时使用
+
+# 我方主打优势：话术里唯一允许出现的"实力句"来源
+advantage:
+  headline: "外卡/跨境收单是我们做得最深的方向"
+  endorsement: "外卡这块我们在做，现在跑着的商户上百家"   # 必须真实；数字变化要及时更新
+  rotation:                                # 背书轮换池（防文案重复）
+    - "外卡已服务上百家商户"
+    - "<COMPANY_BRAND_NAME>·2021年·成都"
+    - "<合作渠道方名单>"
+    - "<合作银行名单>"
+    - "<标杆交付案例>"
+    - "<服务规模>"
+
+# 客群分层：segments 的 share 控制每轮名额分配；keywords 供搜索页轮换
+segments:
+  - id: C
+    name: "外卡/跨境收款"
+    share: 0.66
+    keywords: [跨境电商, 外贸工厂, 独立站, 外贸收款, 海外批发, 国际物流, 跨境卖家, 出海品牌, 海外仓, 亚马逊卖家]
+    pain: "{细分}收的都是美元货款，走平台放款周期长、还可能被冻款。外卡直连是另一条路，和内卡是两套通道和资质"
+    opener_questions: ["你现在主要做哪个站点、货款怎么结？", "客户主要在哪些国家、一般怎么付款？"]
+    sub_variants:                          # 不同细分替换第一句的引用语
+      亚马逊: "亚马逊卖家收的都是美元货款"
+      独立站: "独立站收的都是海外客户的钱，走外卡通道"
+      海外仓: "海外仓收款最怕两件事：客户境外付外币外卡、结算周期长冻款风险"
+      国际物流: "国际物流收款最怕：境外外币外卡付不上、账期长冻款"
+  - id: B
+    name: "分账/多主体收款"
+    share: 0.34
+    keywords: [分账系统, 多商户分账, 分销结算, 连锁加盟收款, 批发档口]
+    pain: "门店天天在收款，钱全进一个户，对账靠手工"
+    opener_questions: ["你现在分账是怎么做的？", "门店/商户有多少家，钱怎么走？"]
+paused_segments: [建材批发, 社区团购, 涉外餐厅]   # 实测低效，暂停但不删除
+
+# 同行排除：昵称命中即跳过
+peer_exclude_regex: "支付|通道|分账|收银|POS|系统搭建|扫码|软件|科技|培训|咨询|学院|服务商"
+
+audience_filter:
+  fans_min: 10000
+  fans_max: 200000
+  prefer: "认证徽章 / 公司字样 / 简介有经营痕迹"
+
+# 合规红线：回复监控与话术生成都必须逐条对照
+compliance:
+  forbid:
+    - 具体费率/价格数字
+    - 到账时间承诺 / 审批结果承诺 / 返点承诺
+    - 主动留微信号、手机号、网址
+    - 「最」「第一」「100%」「保证」等绝对化用语
+    - 贬低同行、教规避风控
+  quote_script: "费率要按类目和走的通道定，我给报错后面还得改。你把业务类型和月流水量级发我，我出一版带费率的方案。"
+  contact_script: "官网 <YOUR_WEBSITE_DOMAIN>，或企业信息平台搜<COMPANY_LEGAL_NAME>。"   # 仅对方主动问时
+  handoff_triggers: [要合同, 要发票, 要上门, 投诉, 明显不满]
+
+limits:
+  daily_quota: 20
+  stop_threshold: 18
+  quiet_hours: "22:00-07:00"
+  max_msg_per_user_24h: 2
+  dm_per_round: 3
+  reply_per_round: 5
+
+# 视频（不需要的用户整段 enabled: false，SOP 自动跳过该产线）
+video:
+  enabled: true
+  title_prefix: "支付常识"
+  duration_sec: 32
+  topic_pool:                              # 每个「核心痛点」只能用一次，用前查重
+    - { angle: "新商户号为何被判风控", pain: "风控原理" }
+    - { angle: "外卡收不了（内卡外卡两套通道）", pain: "外卡通道差异" }
+    - { angle: "外卡被拒付（chargeback）怎么处理", pain: "拒付" }
+    - { angle: "外卡费率为什么比内卡高（成本结构）", pain: "费率成本" }
+    - { angle: "跨境电商平台放款 vs 外卡直连的区别", pain: "放款模式" }
+    - { angle: "外卡 3D 验证（3DS）为什么影响成交", pain: "3DS" }
+    - { angle: "一个订单多主体分账靠手工", pain: "分账手工" }
+    - { angle: "远程收款为什么容易被判异常", pain: "异地风控" }
+    - { angle: "收款码被扫后资金多久到账", pain: "结算周期" }
+    - { angle: "什么情况下会被要求补充交易凭证", pain: "交易凭证" }
+  cta: "私信说下你的情况"
+  color_palette: ["#2B2BFF", "#FF5A4E", "#FFC62B", "#2EE6A8", "#FFF6E9", "#151433"]
+
+eac:                                       # 本地 TTS（GPT-SoVITS）；没有就留空回退系统TTS
+  project_id: "<EAC_PROJECT_ID>"
+  voice: "mambo-zh"
+
+state_dir: "<DSH_HOME>\\douyin-outreach"
+paths:
+  work_dir: "<WORK_DIR>\\pay-shorts"       # HTML 母版与成片目录
